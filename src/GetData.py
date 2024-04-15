@@ -64,13 +64,21 @@ class GetData(AbstrGetData):
         data = self.getting_employers()
         employers = []
         for emp in data:
-            employers.append(({
-                'id': emp['id'],
-                'name': emp['name'],
+            employers.append({
+                'company_id': emp['id'],
+                'name_company': emp['name'],
                 'vacancies': emp['open_vacancies']
-            }))
+            })
         return employers
 
+    def info(self):
+        data = self.getting_employers()
+        employers = []
+        for emp in data:
+            employers.append(int(emp['id']))
+            employers.append(emp['name'])
+            employers.append(emp['open_vacancies'])
+        return employers
 
     def getting_vacations(self):
         """
@@ -93,7 +101,7 @@ class GetData(AbstrGetData):
                 continue
             else:
                 filter_data.append({
-                    'vacancy_id': vac['id'],
+                    'vacancy_id': int(vac['id']),
                     'company_id': vac['employer'].get('id'),
                     'name': vac['name'],
                     'salary_from': vac['salary'].get('from'),
@@ -106,6 +114,7 @@ class GetData(AbstrGetData):
 
 if __name__ == '__main__':
     emp = GetData()
-    print(emp.getting_employers())
+    #print(emp.info())
+    print(emp.vacancies_company())
 
 
