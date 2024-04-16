@@ -95,6 +95,7 @@ class GetData(AbstrGetData):
                 filter_data.append({
                     'vacancy_id': int(vac['id']),
                     'company_id': int(vac['employer'].get('id')),
+                    'company_name': vac['employer'].get('name'),
                     'name': vac['name'],
                     'salary_from': vac['salary'].get('from'),
                     'salary_to': vac['salary'].get('to'),
@@ -105,10 +106,6 @@ class GetData(AbstrGetData):
         return filter_data
 
 
-if __name__ == '__main__':
-    emp = GetData()
-    print(emp.vacancies_company())
-    print(emp.filter_vacancy())
 
 
 

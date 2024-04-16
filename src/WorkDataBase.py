@@ -17,7 +17,7 @@ class Database:
             port='1024',
             database='HHru',
             user='postgres',
-            password='Kkn_250600'
+            password='12345'
         )
         return conn
 
@@ -35,7 +35,6 @@ class Database:
                 (i['company_id'], i['name_company'], i['vacancies'])
             )
             conn.commit()
-        conn.close()
 
     def data_input_vacancies(self, list_vacancies):
         """
@@ -51,15 +50,17 @@ class Database:
                 'INSERT INTO vacancies ('
                 'vacancy_id, '
                 'company_id, '
+                'company_name, '
                 'vacancy_name, '
                 'salary_from, '
                 'salary_to, '
                 'url_vacancy, '
                 'responsibility) '
-                'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                'VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
                 (
                     i['vacancy_id'],
                     i['company_id'],
+                    i['company_name'],
                     i['name'],
                     i['salary_from'],
                     i['salary_to'],
@@ -68,4 +69,4 @@ class Database:
                 )
             )
             conn.commit()
-        conn.close()
+
