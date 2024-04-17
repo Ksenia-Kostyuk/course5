@@ -1,20 +1,7 @@
 import requests
-from abc import ABC, abstractmethod
 
 
-class AbstrGetData(ABC):
-    """
-    Определяет будущтий функционал класса,
-    который получает данные о профессиях
-    """
-
-    @abstractmethod
-    def connection_api(self):
-        """Подключается к API"""
-        pass
-
-
-class GetData(AbstrGetData):
+class GetData:
     """Подключается к серверу поиска вакансий"""
 
     def connection_api(self):
@@ -44,7 +31,8 @@ class GetData(AbstrGetData):
 
     def list_employers(self):
         """
-        Возвращает список компаний-работодателей и их id
+        Возвращает список компаний-работодателей и их id,
+        используется как параметр получения списка вакансий
         :return: (list) список компаний
         """
         data = self.getting_employers()
@@ -77,7 +65,7 @@ class GetData(AbstrGetData):
         Возвращает вакансий с удаленного сервера
         :return: (str) файл json
         """
-        param = self.list_employers()
+        param = self.vacancies_company()
         response = requests.get("https://api.hh.ru/vacancies", param)
         return response.json().get("items")
 
@@ -86,10 +74,10 @@ class GetData(AbstrGetData):
         Формирует список вакансий, добавляемых в БД
         :return: (list) список вакансий
         """
-        vacancies = self.getting_vacations()
+        vacancies = self.list_employers()
         filter_data = []
         for vac in vacancies:
-            if vac['salary'] == None:
+            if vac['salary'] is None:
                 continue
             else:
                 filter_data.append({
@@ -104,8 +92,3 @@ class GetData(AbstrGetData):
                 })
 
         return filter_data
-
-
-
-
-
