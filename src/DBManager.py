@@ -6,35 +6,29 @@ class DBManager():
     Подключается к БД и работает с ней
     """
 
-    def connection_database(self):
-        """
-        Подключение к БД
-        :return: None
-        """
-        conn = psycopg2.connect(
+    def __init__(self):
+        self.conn = psycopg2.connect(
             host='localhost',
             port='1024',
             database='HHru',
             user='postgres',
             password='12345'
         )
-        cur = conn.cursor()
-        return cur
+        self.cur = self.conn.cursor()
 
     def data_input_company(self, list_data):
         """
         Вводит данные о компании в соответствующую таблицу
         :return: None
         """
-        conn = self.connection_database()
-        cur = self.connection_database()
+
         for i in list_data:
-            cur.execute(
+            self.cur.execute(
                 'INSERT INTO company(company_id, name_company, vacancies) '
                 'VALUES (%s, %s, %s)',
                 (i['company_id'], i['name_company'], i['vacancies'])
             )
-            conn.commit()
+            self.conn.commit()
 
     def data_input_vacancies(self, list_vacancies):
         """
@@ -42,10 +36,8 @@ class DBManager():
         :param list_vacancies: (list) список вакансий
         :return: None
         """
-        conn = self.connection_database()
-        cur = self.connection_database()
         for i in list_vacancies:
-            cur.execute(
+            self.cur.execute(
                 'INSERT INTO vacancies ('
                 'vacancy_id, '
                 'company_id, '
@@ -67,16 +59,15 @@ class DBManager():
                     i['responsibility']
                 )
             )
-            conn.commit()
+            self.conn.commit()
 
     def get_companies_and_vacancies_count(self):
         """Получает список всех работодателей и сумму
         вакансий этой компании
         :return: (str)
         """
-        cur = self.connection_database()
-        cur.execute('SELECT name_company, vacancies FROM company')
-        result = cur.fetchall()
+        self.cur.execute('SELECT name_company, vacancies FROM company')
+        result = self.cur.fetchall()
         for i in result:
             print (f'{i[0]} - {i[1]} вакансий')
 
@@ -86,9 +77,8 @@ class DBManager():
         названия вакансии и зарплаты и ссылки на вакансию
         :return: (str)
         """
-        cur = self.connection_database()
-        cur.execute('SELECT vacancy_name, company_name, salary_from, salary_to, url_vacancy vacancies FROM vacancies')
-        result = cur.fetchall()
+        self.cur.execute('SELECT vacancy_name, company_name, salary_from, salary_to, url_vacancy vacancies FROM vacancies')
+        result = self.cur.fetchall()
         for i in result:
             print(f'{i[0]} ({i[1]}) зароботная плата от {i[2]} до {i[3]}, ссылка {i[4]}')
 
@@ -97,9 +87,8 @@ class DBManager():
         Получает среднюю зарплату по вакансиям
         :return: (str)
         """
-        cur = self.connection_database()
-        cur.execute('SELECT AVG(salary_from) FROM vacancies')
-        result = cur.fetchall()
+        self.cur.execute('SELECT AVG(salary_from) FROM vacancies')
+        result = self.cur.fetchall()
         for i in result:
             print(f'Средняя заработная плата по предложенным вакансиям -> {i}')
 
@@ -110,10 +99,9 @@ class DBManager():
         у которых зарплата выше средней по всем вакансиям.
         :return: (str)
         """
-        cur = self.connection_database()
-        cur.execute('SELECT vacancy_name, url_vacancy FROM vacancies'
+        self.cur.execute('SELECT vacancy_name, url_vacancy FROM vacancies'
                     'WHERE salary_from>AVG(salary_from)')
-        result = cur.fetchall()
+        result = self.cur.fetchall()
         for i in result:
             print(f'{i[0]}, ссылка {i[1]}')
 
@@ -124,13 +112,11 @@ class DBManager():
         в названии которых содержатся переданные в метод слова
         :return:
         """
-        cur = self.connection_database()
-        cur.execute('SELECT vacancy_name, url_vacancy FROM vacancies'
+        self.cur.execute('SELECT vacancy_name, url_vacancy FROM vacancies'
                     'WHERE vacancy_name LIKE %{words}%')
-        result = cur.fetchall()
+        result = self.cur.fetchall()
         for i in result:
             print(f'{i[0]}, ссылка {i[1]}')
 
     def close_db(self):
-        conn = self.connection_database()
-        conn.close()
+        self.conn.close()

@@ -4,7 +4,6 @@ from src.DBManager import DBManager
 def main():
     print('Добро пожаловать. Предлагаю вам топ-10 работодателей сегодня')
     dbm = DBManager()
-    dbm.connection_database()
     print(dbm.get_companies_and_vacancies_count())
 
     input_user = ('Вот некоторые функции нашей программы:\n'
